@@ -6,23 +6,89 @@ using System.Linq;
 public class generate : MonoBehaviour {
 
 	public GameObject cylinderPrefab;
+	public GameObject vessel;
+
+	//these variables should be set up in the menu
+	public float pairs_of_vessels = 2.0f;
+	public float ups_per_vessel = 3.0f;
+	public float sector_length = 1.0f;
+	public float vessel_length = 30.0f;
+	public float artery_vein_dist = 3.0f;
+	public float pairs_dist = 5.0f;
+	public float max_thickness = 0.5f;
+	public float levels = 20.0f;
+	public float chance_of_split = 0.05f;
+	public float max_distance_of_split = 3.0f; 
+	public float max_curvature = 0.3f;
+
+	private bool params_changed = false;
+
+	public void AdjustPairs(float val){
+		pairs_of_vessels = val; 
+		params_changed = true;
+	}
+
+	public void AdjustUps(float val){
+		ups_per_vessel = val; 
+		params_changed = true;
+	}
+
+	public void AdjustSecLen(float val){
+		sector_length = val; 
+		params_changed = true;
+	}
+
+	public void AdjustVesLen(float val){
+		vessel_length = val; 
+		params_changed = true;
+	}
+
+	public void AdjustArtery(float val){
+		artery_vein_dist = val; 
+		params_changed = true;
+	}
+
+	public void AdjustPairsDist(float val){
+		pairs_dist = val; 
+		params_changed = true;
+	}
+
+
+	public void AdjustMaxThick(float val){
+		max_thickness = val; 
+		params_changed = true;
+	}
+
+	public void AdjustLevels(float val){
+		levels = val; 
+		params_changed = true;
+	}
+
+	public void AdjustChance(float val){
+		chance_of_split = val; 
+		params_changed = true;
+	}
+
+	public void AdjustMaxDist(float val){
+		max_distance_of_split = val; 
+		params_changed = true;
+	}
+
+	public void AdjustMaxCurv(float val){
+		max_curvature = val; 
+		params_changed = true;
+	}
+
+	void Start(){
+		vessel = new GameObject("Vessel");
+		Generate();
+	}
 
 	// Use this for initialization
-	void Start () {
-		//these variables should be set up in the menu
-		float pairs_of_vessels = 2.0f;
-		float ups_per_vessel = 3.0f;
-		float sector_length = 1.0f;
-		float vessel_length = 30.0f;
-		float artery_vein_dist = 3.0f;
-		float pairs_dist = 5.0f;
-		float max_thickness = 0.5f;
-		float levels = 20.0f;
-		float chance_of_split = 0.05f;
-		float max_distance_of_split = 3.0f; 
-		float max_curvature = 0.3f;
-
-
+	void Generate () {
+		params_changed = false;
+		GameObject.Destroy(vessel);
+		vessel = new GameObject("Vessel");
 		//computed values
 		float grid_sectors_per_vessel = vessel_length / sector_length;
 		System.Collections.Generic.Queue<Vector3> qv = new Queue<Vector3>();
@@ -166,6 +232,7 @@ public class generate : MonoBehaviour {
 		Vector3 scale = new Vector3 (width, offset.magnitude / 2.0f, width);
 		Vector3 position = start + (offset / 2.0f);
 		GameObject cylinder = Instantiate (cylinderPrefab, position, Quaternion.identity) as GameObject;
+		cylinder.transform.parent = vessel.transform;
 		cylinder.transform.up = offset;
 		cylinder.transform.localScale = scale;
 	}
@@ -209,6 +276,9 @@ public class generate : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		if(params_changed){
+			Generate();
+		}
 	
 	}
 }
