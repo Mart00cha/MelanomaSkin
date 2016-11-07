@@ -18,7 +18,7 @@ public class generate : MonoBehaviour {
 	public float max_thickness = 0.5f;
 	public float levels = 20.0f;
 	public float chance_of_split = 0.05f;
-	public float max_distance_of_split = 3.0f; 
+	public float max_distance_of_split = 1.5f; 
 	public float max_curvature = 0.3f;
 
 	private bool params_changed = false;
@@ -103,6 +103,7 @@ public class generate : MonoBehaviour {
 		System.Collections.Generic.Queue<Vector3> base_qv = new Queue<Vector3>();
 		System.Collections.Generic.Queue<Vector3> base_qa = new Queue<Vector3>();
 
+		//create base vessels
 		for(float i=1.0f; i<= pairs_of_vessels; i++){
 			base_qv = CreateLongCylinderWithReturnPoints(new Vector3(0,0, i*(pairs_dist+artery_vein_dist)), new Vector3(vessel_length, 0, i*(pairs_dist+artery_vein_dist)), max_thickness, sector_length);
 			base_qa = CreateLongCylinderWithReturnPoints(new Vector3(0,0, i*(pairs_dist+artery_vein_dist)+artery_vein_dist), new Vector3(vessel_length,0, i*(pairs_dist+artery_vein_dist)+artery_vein_dist), max_thickness, sector_length);
@@ -121,7 +122,7 @@ public class generate : MonoBehaviour {
 		}
 
 
-
+		//create veins going up
 		for(float lvl = 1.0f; lvl<levels; lvl++){
 			q_size = qv.Count;
 			for(float v=1.0f; v<=q_size; v++){
@@ -142,7 +143,7 @@ public class generate : MonoBehaviour {
 			}
 		}
 
-
+		//create arteries going up
 		for(float lvl = 1.0f; lvl<levels; lvl++){
 			q_size = qa.Count;
 			for(float v=1.0f; v<=q_size; v++){
