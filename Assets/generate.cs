@@ -108,13 +108,13 @@ public class generate : MonoBehaviour {
 			base_qa = CreateLongCylinderWithReturnPoints(new Vector3(0,0, i*(pairs_dist+artery_vein_dist)+artery_vein_dist), new Vector3(vessel_length,0, i*(pairs_dist+artery_vein_dist)+artery_vein_dist), max_thickness, sector_length);
 
 			for(float k=1.0f; k<= ups_per_vessel; k++){
-				noise = Random.Range(0, (int)(base_qv.Count/3));
-				split_point = base_qv.ElementAt( (int) Mathf.Floor((k*base_qv.Count/3.0f)-1));
+				noise = Random.Range(0, (int)(base_qv.Count/ups_per_vessel));
+				split_point = base_qv.ElementAt( (int) Mathf.Floor((k*base_qv.Count/ups_per_vessel)-1));
 				CreateCylinderBetweenPoints(split_point, new Vector3(split_point.x,split_point.y + sector_length, split_point.z), max_thickness);
 				qv.Enqueue(split_point);
 
-				noise = Random.Range(0, (int)(base_qa.Count/3));
-				split_point = base_qa.ElementAt( (int)Mathf.Floor((k*base_qa.Count/3.0f)-1));
+				noise = Random.Range(0, (int)(base_qa.Count/ups_per_vessel));
+				split_point = base_qa.ElementAt( (int)Mathf.Floor((k*base_qa.Count/ups_per_vessel)-1));
 				CreateCylinderBetweenPoints(split_point, new Vector3(split_point.x,split_point.y + sector_length, split_point.z), max_thickness);
 				qa.Enqueue(split_point);
 			}		
@@ -128,14 +128,14 @@ public class generate : MonoBehaviour {
 				point = qv.Dequeue();
 				noise = Random.Range(0.0f, 1.0f);
 				if(noise < chance_of_split){
-					endpoint1 = new Vector3(point.x + Random.Range(0.2f,max_distance_of_split), point.y + sector_length, point.z + Random.Range(-1.0f *max_distance_of_split,max_distance_of_split));
-					endpoint2 = new Vector3(point.x + Random.Range(0.2f,max_distance_of_split), point.y + sector_length, point.z + Random.Range(-1.0f * max_distance_of_split,max_distance_of_split));
+					endpoint1 = new Vector3(point.x + Random.Range(-max_distance_of_split,max_distance_of_split), point.y + sector_length, point.z + Random.Range(-1.0f *max_distance_of_split,max_distance_of_split));
+					endpoint2 = new Vector3(point.x + Random.Range(-max_distance_of_split,max_distance_of_split), point.y + sector_length, point.z + Random.Range(-1.0f * max_distance_of_split,max_distance_of_split));
 					qv.Enqueue(endpoint1);
 					qv.Enqueue(endpoint2);
 					CreateCylinderBetweenPoints(point, endpoint1, max_thickness/(1 + Mathf.Floor(lvl*0.2f)));
 					CreateCylinderBetweenPoints(point, endpoint2, max_thickness/(1 + Mathf.Floor(lvl*0.2f)));
 				} else {
-					endpoint1 = new Vector3(point.x + Random.Range(0.0f,max_curvature), point.y + sector_length, point.z + Random.Range(-1.0f * max_curvature,max_curvature));
+					endpoint1 = new Vector3(point.x + Random.Range(-max_curvature,max_curvature), point.y + sector_length, point.z + Random.Range(-1.0f * max_curvature,max_curvature));
 					qv.Enqueue(endpoint1);
 					CreateCylinderBetweenPoints(point, endpoint1, max_thickness/(1 + Mathf.Floor(lvl*0.2f)));
 				}
@@ -149,14 +149,14 @@ public class generate : MonoBehaviour {
 				point = qa.Dequeue();
 				noise = Random.Range(0.0f, 1.0f);
 				if(noise < chance_of_split){
-					endpoint1 = new Vector3(point.x + Random.Range(0.2f,max_distance_of_split), point.y + sector_length, point.z + Random.Range(-1.0f *max_distance_of_split,max_distance_of_split));
-					endpoint2 = new Vector3(point.x + Random.Range(0.2f,max_distance_of_split), point.y + sector_length, point.z + Random.Range(-1.0f * max_distance_of_split,max_distance_of_split));
+					endpoint1 = new Vector3(point.x + Random.Range(-max_distance_of_split,max_distance_of_split), point.y + sector_length, point.z + Random.Range(-1.0f *max_distance_of_split,max_distance_of_split));
+					endpoint2 = new Vector3(point.x + Random.Range(-max_distance_of_split,max_distance_of_split), point.y + sector_length, point.z + Random.Range(-1.0f * max_distance_of_split,max_distance_of_split));
 					qa.Enqueue(endpoint1);
 					qa.Enqueue(endpoint2);
 					CreateCylinderBetweenPoints(point, endpoint1, max_thickness/(1 + Mathf.Floor(lvl*0.2f)));
 					CreateCylinderBetweenPoints(point, endpoint2, max_thickness/(1 + Mathf.Floor(lvl*0.2f)));
 				} else {
-					endpoint1 = new Vector3(point.x + Random.Range(0.0f,max_curvature), point.y + sector_length, point.z + Random.Range(-1.0f * max_curvature,max_curvature));
+					endpoint1 = new Vector3(point.x + Random.Range(-max_curvature,max_curvature), point.y + sector_length, point.z + Random.Range(-1.0f * max_curvature,max_curvature));
 					qa.Enqueue(endpoint1);
 					CreateCylinderBetweenPoints(point, endpoint1, max_thickness/(1 + Mathf.Floor(lvl*0.2f)));
 				}
@@ -245,7 +245,7 @@ public class generate : MonoBehaviour {
 		Vector3 endpoint;
 
 		for(int i=1; i<=no_of_sectors; i++){
-			endpoint = new Vector3(start.x + i*sector_vec.x + Random.Range(-1.0f, 1.0f), start.y + i*sector_vec.y + Random.Range(-1.0f, 1.0f), start.z + i*sector_vec.z + Random.Range(-0.2f, 0.2f));
+			endpoint = new Vector3(start.x + i*sector_vec.x + Random.Range(-max_curvature, max_curvature), start.y + i*sector_vec.y + Random.Range(-max_curvature, max_curvature), start.z + i*sector_vec.z + Random.Range(-0.2f, 0.2f));
 			CreateCylinderBetweenPoints(startpoint, endpoint, width);
 			startpoint=endpoint;
 
@@ -263,7 +263,7 @@ public class generate : MonoBehaviour {
 		Queue<Vector3> q = new Queue<Vector3>();
 
 		for(int i=1; i<=no_of_sectors; i++){
-			endpoint = new Vector3(start.x + i*sector_vec.x + Random.Range(-1.0f, 1.0f), start.y + i*sector_vec.y + Random.Range(-1.0f, 1.0f), start.z + i*sector_vec.z + Random.Range(-0.2f, 0.2f));
+			endpoint = new Vector3(start.x + i*sector_vec.x + Random.Range(-max_curvature,max_curvature), start.y + i*sector_vec.y + Random.Range(-max_curvature, max_curvature), start.z + i*sector_vec.z + Random.Range(-max_curvature, max_curvature));
 			CreateCylinderBetweenPoints(startpoint, endpoint, width);
 			q.Enqueue(endpoint);
 			startpoint=endpoint;
