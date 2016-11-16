@@ -23,6 +23,9 @@ public class generate : MonoBehaviour {
 
 	private bool params_changed = false;
 
+	public System.Collections.Generic.Dictionary<Vector3, Vector3> export_dict;
+
+
 	public void AdjustPairs(float val){
 		pairs_of_vessels = val; 
 		params_changed = true;
@@ -89,6 +92,7 @@ public class generate : MonoBehaviour {
 		params_changed = false;
 		GameObject.Destroy(vessel);
 		vessel = new GameObject("Vessel");
+
 		//computed values
 		float grid_sectors_per_vessel = vessel_length / sector_length;
 		System.Collections.Generic.Queue<Vector3> qv = new Queue<Vector3>();
@@ -102,6 +106,7 @@ public class generate : MonoBehaviour {
 		Vector3 connection_point;
 		System.Collections.Generic.Queue<Vector3> base_qv = new Queue<Vector3>();
 		System.Collections.Generic.Queue<Vector3> base_qa = new Queue<Vector3>();
+		export_dict = new Dictionary<Vector3, Vector3>();
 
 		//create base vessels
 		for(float i=1.0f; i<= pairs_of_vessels; i++){
@@ -112,11 +117,13 @@ public class generate : MonoBehaviour {
 				noise = Random.Range(0, (int)(base_qv.Count/ups_per_vessel));
 				split_point = base_qv.ElementAt( (int) Mathf.Floor((k*base_qv.Count/ups_per_vessel)-1));
 				CreateCylinderBetweenPoints(split_point, new Vector3(split_point.x,split_point.y + sector_length, split_point.z), max_thickness);
+				export_dict.Add(split_point, new Vector3(split_point.x,split_point.y + sector_length, split_point.z));
 				qv.Enqueue(split_point);
 
 				noise = Random.Range(0, (int)(base_qa.Count/ups_per_vessel));
 				split_point = base_qa.ElementAt( (int)Mathf.Floor((k*base_qa.Count/ups_per_vessel)-1));
 				CreateCylinderBetweenPoints(split_point, new Vector3(split_point.x,split_point.y + sector_length, split_point.z), max_thickness);
+				export_dict.Add(split_point,  new Vector3(split_point.x,split_point.y + sector_length, split_point.z));
 				qa.Enqueue(split_point);
 			}		
 		}
