@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+
 public class generate : MonoBehaviour {
 
 	public GameObject cylinderPrefab;
@@ -23,8 +24,9 @@ public class generate : MonoBehaviour {
 
 	private bool params_changed = false;
 
-	public System.Collections.Generic.Dictionary<Vector3, Vector3> export_dict;
 
+
+	public System.Collections.Generic.List<Tube> export_dict;
 
 	public void AdjustPairs(float val){
 		pairs_of_vessels = val; 
@@ -106,7 +108,7 @@ public class generate : MonoBehaviour {
 		Vector3 connection_point;
 		System.Collections.Generic.Queue<Vector3> base_qv = new Queue<Vector3>();
 		System.Collections.Generic.Queue<Vector3> base_qa = new Queue<Vector3>();
-		export_dict = new Dictionary<Vector3, Vector3>();
+		export_dict = new List<Tube>();
 
 		//create base vessels
 		for(float i=1.0f; i<= pairs_of_vessels; i++){
@@ -117,13 +119,11 @@ public class generate : MonoBehaviour {
 				noise = Random.Range(0, (int)(base_qv.Count/ups_per_vessel));
 				split_point = base_qv.ElementAt( (int) Mathf.Floor((k*base_qv.Count/ups_per_vessel)-1));
 				CreateCylinderBetweenPoints(split_point, new Vector3(split_point.x,split_point.y + sector_length, split_point.z), max_thickness);
-				export_dict.Add(split_point, new Vector3(split_point.x,split_point.y + sector_length, split_point.z));
 				qv.Enqueue(split_point);
 
 				noise = Random.Range(0, (int)(base_qa.Count/ups_per_vessel));
 				split_point = base_qa.ElementAt( (int)Mathf.Floor((k*base_qa.Count/ups_per_vessel)-1));
 				CreateCylinderBetweenPoints(split_point, new Vector3(split_point.x,split_point.y + sector_length, split_point.z), max_thickness);
-				export_dict.Add(split_point,  new Vector3(split_point.x,split_point.y + sector_length, split_point.z));
 				qa.Enqueue(split_point);
 			}		
 		}
@@ -234,7 +234,7 @@ public class generate : MonoBehaviour {
 	}
 	
 
-	private void CreateCylinderBetweenPoints(Vector3 start, Vector3 end, float width)
+	private void CreateCylinderBetweenPoints(Vector3 start, Vector3 end, float width, string type = "")
 	{
 		Vector3 offset = end - start;
 		Vector3 scale = new Vector3 (width, offset.magnitude / 2.0f, width);
@@ -243,6 +243,8 @@ public class generate : MonoBehaviour {
 		cylinder.transform.parent = vessel.transform;
 		cylinder.transform.up = offset;
 		cylinder.transform.localScale = scale;
+		Tube tube = new Tube(start,end,width/2.0f);
+		export_dict.Add(tube);
 	}
 
 	private void CreateLongCylinder(Vector3 start, Vector3 end, float width, float sector_length)
