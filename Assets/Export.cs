@@ -53,13 +53,13 @@ public class Export : MonoBehaviour {
 			file.WriteLine();
 
 			//just for debugging
-			if (tube.prev_id>=0){
-				file.WriteLine("prev_id = {0}", tube.prev_id);
-			}
-			file.WriteLine();
+			// if (tube.prev_id>=0){
+			// 	file.WriteLine("prev_id = {0}", tube.prev_id);
+			// }
+			// file.WriteLine();
 
-			file.WriteLine("id = {0}", tube.id);
-			file.WriteLine();
+			// file.WriteLine("id = {0}", tube.id);
+			// file.WriteLine();
 
 
 
