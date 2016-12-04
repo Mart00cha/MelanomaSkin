@@ -18,12 +18,14 @@ public class Export : MonoBehaviour {
 
 		Rename_ids(script.export_dict);
 
+		Debug.Log(script.export_dict.Count());
+
         foreach (Tube tube in script.export_dict)
 		{	
 			file.WriteLine("tube");
 			file.WriteLine("{");
 			file.WriteLine();
-			file.WriteLine("m_id = {0}", tube.m_id);
+			file.WriteLine("id = {0}", tube.m_id);
 			file.WriteLine();
 			file.WriteLine("pos1 = <{0}, {1}, {2}>", tube.start.x, tube.start.y, tube.start.z);
 			file.WriteLine("pos2 = <{0}, {1}, {2}>", tube.end.x, tube.end.y, tube.end.z);
@@ -65,6 +67,8 @@ public class Export : MonoBehaviour {
 
 			file.WriteLine("}");
 		}
+
+		file.Close();
 	}
 
 	private void Rename_ids(List<Tube> export_dict){

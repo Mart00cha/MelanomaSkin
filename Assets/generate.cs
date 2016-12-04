@@ -338,7 +338,7 @@ public class generate : MonoBehaviour {
 		}
 
 		CreateCylinderBetweenPoints(startpoint, end, width);
-		tube = new Tube(id,start,end,width/2.0f,id-1,0,0,false,true,10.0f);
+		tube = new Tube(id,startpoint,end,width/2.0f,id-1,0,0,false,true,10.0f);
 		id+=1;
 		q.Add(tube);
 		return q;
