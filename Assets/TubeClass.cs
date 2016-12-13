@@ -17,7 +17,7 @@ public class Tube{
 	public float pressure;
 	public int m_id;
 
-	internal Tube(int ida, Vector3 starta, Vector3 enda, float ra, int prev_ida , int base_ida = 0, int top_ida = 0, bool firsta = false, bool fixed_blood_pressurea = false, float pressurea = 0.0f){
+	internal Tube(int ida, Vector3 starta, Vector3 enda, float ra, int prev_ida , int base_ida = -1, int top_ida = -1, bool firsta = false, bool fixed_blood_pressurea = false, float pressurea = 0.0f){
 		id = ida;
 		prev_id= prev_ida;
 		start = starta;
@@ -32,5 +32,11 @@ public class Tube{
 
 	public void set_id(int m_ida){
 		m_id = m_ida;
+	}
+
+	public void switch_ends(){
+		Vector3 tmp = start;
+		start = end;
+		end = tmp;
 	}
 }
