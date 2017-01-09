@@ -7,7 +7,9 @@ using System.Linq;
 public class generate : MonoBehaviour {
 
 	public GameObject cylinderPrefab;
+	public GameObject cellPrefab;
 	public GameObject vessel;
+	public GameObject layer1;
 
 	//these variables should be set up in the menu
 	public float pairs_of_vessels = 2.0f;
@@ -28,8 +30,7 @@ public class generate : MonoBehaviour {
 	private float full_size_x;
 	private float full_size_y;
 	private float full_size_z;
-
-
+	private float cell_size = 1.5f;
 
 
 	public System.Collections.Generic.List<Tube> export_dict;
@@ -101,7 +102,7 @@ public class generate : MonoBehaviour {
 		GameObject.Destroy(vessel);
 		vessel = new GameObject("Vessel");
 
-		float full_size_x = vessel_length * 1.1f;
+		float full_size_x = vessel_length * 0.8f;
 		float full_size_y = levels * sector_length;
 		float full_size_z = (pairs_of_vessels + 1.0f) * pairs_dist;
 
@@ -276,6 +277,55 @@ public class generate : MonoBehaviour {
 			CreateLongCylinder( endpoint1, endpoint2, max_thickness/(1 + Mathf.Floor(levels*0.2f)), sector_length, Find_by_endpoint(endpoint1).id);
 		}
 
+		//GenerateCells(full_size_x, full_size_y, full_size_z, cell_size);
+
+	}
+
+	private void GenerateCells(float size_x, float size_y, float size_z, float cell_size){
+		GameObject.Destroy(layer1);
+		layer1 = new GameObject("Layer1");
+		float scale = cell_size;
+
+		for(float x=0.0f; x<size_x; x+=cell_size/2.0f){
+			for(float z = 0.0f; z< size_z; z+=cell_size/2.0f){
+				for(float y = 0.0f; y< size_y * 0.2f; y+=cell_size/2.0f){
+					Vector3 position = new Vector3(x*cell_size, y*cell_size, z*cell_size + pairs_dist);
+					GameObject sphere = Instantiate (cellPrefab, position, Quaternion.identity) as GameObject;
+			        sphere.transform.localScale = new Vector3(scale, scale, scale);
+					sphere.GetComponent<Renderer> ().material = new Material(Shader.Find("Transparent/Diffuse"));
+					sphere.GetComponent<Renderer> ().material.color = new Color(0.4f,0.4f,0.4f,0.1f);
+			        sphere.transform.parent = layer1.transform;
+				}
+			}
+		}
+
+		for(float x=0.0f; x<size_x; x+=cell_size/2.0f){
+			for(float z = 0.0f; z< size_z; z+=cell_size/2.0f){
+				for(float y = size_y * 0.2f; y< size_y * 0.7f; y+=cell_size/2.0f){
+					Vector3 position = new Vector3(x*cell_size, y*cell_size, z*cell_size + pairs_dist);
+					GameObject sphere = Instantiate (cellPrefab, position, Quaternion.identity) as GameObject;
+			        sphere.transform.localScale = new Vector3(scale, scale, scale);
+					sphere.GetComponent<Renderer> ().material = new Material(Shader.Find("Transparent/Diffuse"));
+					sphere.GetComponent<Renderer> ().material.color = new Color(0.2f,0.8f,0.2f,0.05f);
+			        sphere.transform.parent = layer1.transform;
+				}
+			}
+		}
+
+
+		for(float x=0.0f; x<size_x; x+=cell_size/2.0f){
+			for(float z = 0.0f; z< size_z; z+=cell_size/2.0f){
+				for(float y = size_y * 0.7f; y< size_y * 0.9f; y+=cell_size/2.0f){
+					Vector3 position = new Vector3(x*cell_size, y*cell_size, z*cell_size + pairs_dist);
+					GameObject sphere = Instantiate (cellPrefab, position, Quaternion.identity) as GameObject;
+			        sphere.transform.localScale = new Vector3(scale, scale, scale);
+					sphere.GetComponent<Renderer> ().material = new Material(Shader.Find("Transparent/Diffuse"));
+					sphere.GetComponent<Renderer> ().material.color = new Color(0.2f,0.2f,0.8f,0.05f);
+			        sphere.transform.parent = layer1.transform;
+				}
+			}
+		}
+		
 	}
 
 	private Tube Find_by_endpoint(Vector3 point){
@@ -292,6 +342,7 @@ public class generate : MonoBehaviour {
 		Vector3 scale = new Vector3 (width, offset.magnitude / 2.0f, width);
 		Vector3 position = start + (offset / 2.0f);
 		GameObject cylinder = Instantiate (cylinderPrefab, position, Quaternion.identity) as GameObject;
+		cylinder.GetComponent<Renderer> ().material.color = new Color(1,0,0);
 		cylinder.transform.parent = vessel.transform;
 		cylinder.transform.up = offset;
 		cylinder.transform.localScale = scale;

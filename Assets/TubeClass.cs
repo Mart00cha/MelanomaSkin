@@ -39,4 +39,11 @@ public class Tube{
 		start = end;
 		end = tmp;
 	}
+
+	public void switch_to_top_id(){
+		if( top_id == -1){
+			top_id = base_id;
+			base_id = -1;
+		}
+	}
 }

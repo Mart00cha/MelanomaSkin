@@ -118,7 +118,7 @@ public class Export : MonoBehaviour {
 					export_dict[x].first = false;
 					export_dict[x].set_id(curr_m_id);
 					export_dict[x].switch_ends();
-					//zamienic base_id na top_id
+					export_dict[x].switch_to_top_id();
 					curr_m_id+=1;
 					int i = firsts.FindIndex(a => a == x);
 					foreach( int f in firsts){Debug.Log(f);}
@@ -133,7 +133,12 @@ public class Export : MonoBehaviour {
 			if (tube.top_id >=0){
 				tube.top_id = export_dict[tube.top_id].m_id;
 			}
+			if (tube.base_id >=0){
+				tube.base_id = export_dict[tube.base_id].m_id;
+			}
 		}
+
+
 	}
 
 	private int Find_same_vessel(Tube tube, List<Tube> export_dict){
