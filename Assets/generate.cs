@@ -38,9 +38,7 @@ public class generate : MonoBehaviour {
 	public System.Collections.Generic.List<Tube> export_dict;
 
 	public void AdjustCellSize(float val){
-		Debug.Log(val);
 		cell_size = val; 
-		Debug.Log(cell_size);
 	}
 
 	public void AdjustCellCurv(float val){
@@ -108,11 +106,15 @@ public class generate : MonoBehaviour {
 		Generate();
 	}
 
+
+
+
 	public void GenerateCells (){
 		float size_x = vessel_length + 5.0f;
 		float size_y = (levels + 5.0f) * sector_length;
 		float size_z = (pairs_of_vessels + 1.0f) * pairs_dist;
-		Debug.Log("ok");
+
+		float color;
 
 		GameObject.Destroy(layer1);
 		layer1 = new GameObject("Layer1");
@@ -125,39 +127,19 @@ public class generate : MonoBehaviour {
 
 		for(float x=0.0f; x<=count_x; x+=1){
 			for(float z = 0.0f; z<= count_z; z+=1){
-				for(float y = 0.0f; y<= count_y * 0.2f; y+=1){
+				for(float y = 0.0f; y<= count_y; y+=1){
 					Vector3 position = new Vector3((x-2.0f)*cell_size, (y-1.0f)*cell_size, z*cell_size + pairs_dist);
 					GameObject sphere = Instantiate (cellPrefab, position, Quaternion.identity) as GameObject;
 			        sphere.transform.localScale = Vector3.one * scale;
 					sphere.GetComponent<Renderer> ().material = new Material(Shader.Find("Transparent/Diffuse"));
-					sphere.GetComponent<Renderer> ().material.color = new Color(0.4f,0.4f,0.4f,0.1f);
-			        sphere.transform.parent = layer1.transform;
-				}
-			}
-		}
-
-		for(float x=0.0f; x<=count_x; x+=1){
-			for(float z = 0.0f; z<= count_z; z+=1){
-				for(float y = count_y * 0.2f; y<= count_y * 0.7f; y+=1){
-					Vector3 position = new Vector3((x-2.0f)*cell_size, (y-1.0f)*cell_size, z*cell_size+ pairs_dist);
-					GameObject sphere = Instantiate (cellPrefab, position, Quaternion.identity) as GameObject;
-			        sphere.transform.localScale = Vector3.one * scale;
-					sphere.GetComponent<Renderer> ().material = new Material(Shader.Find("Transparent/Diffuse"));
-					sphere.GetComponent<Renderer> ().material.color = new Color(0.2f,0.8f,0.2f,0.05f);
-			        sphere.transform.parent = layer1.transform;
-				}
-			}
-		}
-
-
-		for(float x=0.0f; x<=count_x; x+=1){
-			for(float z = 0.0f; z<= count_z; z+=1){
-				for(float y = count_y * 0.7f; y<= count_y * 0.9f; y+=1){
-					Vector3 position = new Vector3((x-2.0f)*cell_size, (y-1.0f)*cell_size, z*cell_size+ pairs_dist);
-					GameObject sphere = Instantiate (cellPrefab, position, Quaternion.identity) as GameObject;
-			        sphere.transform.localScale = Vector3.one * scale;
-					sphere.GetComponent<Renderer> ().material = new Material(Shader.Find("Transparent/Diffuse"));
-					sphere.GetComponent<Renderer> ().material.color = new Color(0.2f,0.2f,0.8f,0.05f);
+					color = ((Mathf.Sin(x) + Mathf.Sin(z)) * cell_curv) + y*cell_size;
+					if(color > count_y * 0.7f){
+						sphere.GetComponent<Renderer> ().material.color = new Color(0.4f,0.4f,0.4f,0.1f);
+					}else if (color > count_y * 0.2f){
+							sphere.GetComponent<Renderer> ().material.color = new Color(0.0f,1.0f,0.0f,0.1f);
+					}else {
+						sphere.GetComponent<Renderer> ().material.color = new Color(0.0f,0.0f,1.0f,0.1f);
+					}
 			        sphere.transform.parent = layer1.transform;
 				}
 			}
@@ -286,7 +268,6 @@ public class generate : MonoBehaviour {
 		//zniweluj różnicę pomiędzy ilością zakończeń
 
 		int diff = qv.Count - qa.Count;
-		Debug.Log(diff);
 
 		Tube tube;
 
