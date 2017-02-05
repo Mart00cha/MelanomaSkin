@@ -728,8 +728,8 @@ MonoBehaviour:
   m_FillRect: {fileID: 87914649}
   m_HandleRect: {fileID: 563869192}
   m_Direction: 0
-  m_MinValue: 0.1
-  m_MaxValue: 2
+  m_MinValue: 0.4
+  m_MaxValue: 1
   m_WholeNumbers: 0
   m_Value: 0.5
   m_OnValueChanged:
@@ -1341,8 +1341,8 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1951532068}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 100
-  m_WholeNumbers: 1
+  m_MaxValue: 2
+  m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1626,10 +1626,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 1090819770}
   m_HandleRect: {fileID: 1484173642}
   m_Direction: 0
-  m_MinValue: 5
-  m_MaxValue: 100
-  m_WholeNumbers: 1
-  m_Value: 30
+  m_MinValue: 1
+  m_MaxValue: 55
+  m_WholeNumbers: 0
+  m_Value: 40
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -1960,10 +1960,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 358747717}
   m_HandleRect: {fileID: 1084484713}
   m_Direction: 0
-  m_MinValue: 2
-  m_MaxValue: 30
+  m_MinValue: 1
+  m_MaxValue: 25
   m_WholeNumbers: 1
-  m_Value: 20
+  m_Value: 2
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -2198,10 +2198,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 577527778}
   m_HandleRect: {fileID: 1195141437}
   m_Direction: 0
-  m_MinValue: 0.1
-  m_MaxValue: 3
+  m_MinValue: 0.5
+  m_MaxValue: 0.5
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0.5
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -2761,9 +2761,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1146728526}
   m_Direction: 0
   m_MinValue: 1
-  m_MaxValue: 10
-  m_WholeNumbers: 1
-  m_Value: 3
+  m_MaxValue: 2
+  m_WholeNumbers: 0
+  m_Value: 2
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -5104,7 +5104,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1679439273}
   m_Direction: 0
   m_MinValue: 1
-  m_MaxValue: 10
+  m_MaxValue: 4
   m_WholeNumbers: 1
   m_Value: 2
   m_OnValueChanged:
@@ -6873,9 +6873,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1672448161}
   m_Direction: 0
   m_MinValue: 1
-  m_MaxValue: 15
-  m_WholeNumbers: 1
-  m_Value: 5
+  m_MaxValue: 3
+  m_WholeNumbers: 0
+  m_Value: 3
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -7861,17 +7861,21 @@ MonoBehaviour:
   layer1: {fileID: 0}
   pairs_of_vessels: 2
   ups_per_vessel: 3
-  sector_length: 1
-  vessel_length: 30
-  artery_vein_dist: 3
-  pairs_dist: 5
+  sector_length: 0.5
+  vessel_length: 40
+  artery_vein_dist: 2
+  pairs_dist: 3
   max_thickness: 0.5
-  levels: 20
+  min_thickness: 0.05
+  levels: 2
   chance_of_split: 0.05
   max_distance_of_split: 1.5
   max_curvature: 0.3
   cell_size: 1
   cell_curv: 0
+  size_x: 0
+  size_y: 0
+  size_z: 0
 --- !u!4 &1977707544
 Transform:
   m_ObjectHideFlags: 0

@@ -16,13 +16,11 @@ public class Export : MonoBehaviour {
 		}
 		var file = File.CreateText("skin.ag");
 
+
 		Rename_ids(script.export_dict);
 
 
 		List<Tube> sortedList = script.export_dict.OrderBy(o=>o.m_id).ToList();
-
-
-		Debug.Log(sortedList.Count());
 
         foreach (Tube tube in sortedList)
 		{	
@@ -57,22 +55,47 @@ public class Export : MonoBehaviour {
 				file.WriteLine("blood_pressure = {0}", tube.pressure);
 			}
 			file.WriteLine();
-
-			//just for debugging
-			// if (tube.prev_id>=0){
-			// 	file.WriteLine("prev_id = {0}", tube.prev_id);
-			// }
-			// file.WriteLine();
-
-			// file.WriteLine("id = {0}", tube.id);
-			// file.WriteLine();
-
-
-
 			file.WriteLine("}");
 		}
 
 		file.Close();
+
+		//file for simulation
+
+		var file1 = File.CreateText("simulation.ag");
+
+		file1.WriteLine("Simulation\r\n{\r\n dimensions = 3\r\n sim_phases = -1\r\n time_step = 1\r\n time = 0\r\n stop_time = inf");
+		file1.WriteLine(" comp_box_from = <{0}, {1}, {2}>", -2.0f-(script.cell_size/2.0f), -1-(script.cell_size/2.0f), 5-(script.cell_size/2.0f));
+		file1.WriteLine(" comp_box_to = <{0}, {1}, {2}>", -2.0f + script.size_x + (script.cell_size/2.0f), -1.0f + script.size_y + (script.cell_size/2.0f), 5.0f + script.size_z+ (script.cell_size/2.0f));
+		file1.WriteLine(" box_size = 30");
+		file1.WriteLine(" max_cells_per_box = 50\r\n force_r_cut = 10\r\n max_tube_chains = 1000\r\n max_tube_merge = 20\r\n save_statistics = 0\r\n save_povray = 0\r\n save_ag = 100\r\n graph_sampling = 10\r\n diffusion_coeff_O2 = 4000\r\n diffusion_coeff_TAF = 1000\r\n diffusion_coeff_Pericytes = 10\r\n}");
+
+		file1.WriteLine();
+
+
+		file1.WriteLine("Tissue\r\n{\r\n name = 'epidermis' \r\n type = NORMAL\r\n color = <0.5, 0.5, 0.5, 1>");
+		file1.WriteLine(" cell_r = {0}", script.cell_size/2.0f);
+		file1.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 3\r\n cell_shrink_speed = 0.01\r\n minimum_mitosis_r = 4.9\r\n force_rep_factor = 1e-016\r\n force_atr1_factor = 5e-018\r\n force_atr2_factor = 1e-018\r\n max_pressure = 1e-016\r\n o2_consumption = 8e-009\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
+
+		file1.WriteLine("Tissue\r\n{\r\n name = 'dermis' \r\n type = NORMAL\r\n color = <0, 1, 0, 1>");
+		file1.WriteLine(" cell_r = {0}", script.cell_size/2.0f);
+		file1.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 3\r\n cell_shrink_speed = 0.01\r\n minimum_mitosis_r = 4.9\r\n force_rep_factor = 1e-016\r\n force_atr1_factor = 5e-018\r\n force_atr2_factor = 1e-018\r\n max_pressure = 1e-016\r\n o2_consumption = 8e-009\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
+
+		file1.WriteLine("Tissue\r\n{\r\n name = 'hypodermis' \r\n type = NORMAL\r\n color = <0, 0, 1, 1>");
+		file1.WriteLine(" cell_r = {0}", script.cell_size/2.0f);
+		file1.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 3\r\n cell_shrink_speed = 0.01\r\n minimum_mitosis_r = 4.9\r\n force_rep_factor = 1e-016\r\n force_atr1_factor = 5e-018\r\n force_atr2_factor = 1e-018\r\n max_pressure = 1e-016\r\n o2_consumption = 8e-009\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
+
+		foreach(Cell cell in script.export_cells){
+			file1.WriteLine("Cell\r\n{");
+			file1.WriteLine("tissue = '{0}'", cell.tissue);
+ 			file1.WriteLine("state = ALIVE");
+ 			file1.WriteLine("pos = <{0}, {1}, {2}>", cell.position.x, cell.position.y, cell.position.z);
+ 			file1.WriteLine("conc_O2 = 0.5\r\n}");
+		}
+
+
+		file1.Close();
+
 	}
 
 	private void Rename_ids(List<Tube> export_dict){
@@ -121,9 +144,8 @@ public class Export : MonoBehaviour {
 					export_dict[x].switch_to_top_id();
 					curr_m_id+=1;
 					int i = firsts.FindIndex(a => a == x);
-					foreach( int f in firsts){Debug.Log(f);}
 					
-					Debug.Log(i);
+
 					firsts[i] = -1;
 				}
 			}

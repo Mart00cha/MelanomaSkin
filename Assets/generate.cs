@@ -14,28 +14,32 @@ public class generate : MonoBehaviour {
 	//these variables should be set up in the menu
 	public float pairs_of_vessels = 2.0f;
 	public float ups_per_vessel = 3.0f;
-	public float sector_length = 1.0f;
+	public float sector_length = 0.5f;
 	public float vessel_length = 30.0f;
 	public float artery_vein_dist = 3.0f;
 	public float pairs_dist = 5.0f;
 	public float max_thickness = 0.5f;
+	public float min_thickness = 0.05f;
 	public float levels = 20.0f;
 	public float chance_of_split = 0.05f;
 	public float max_distance_of_split = 1.5f; 
 	public float max_curvature = 0.3f;
-	public float cell_size = 1.5f;
+	public float cell_size = 0.3f;
 	public float cell_curv = 0.0f;
+
+
 
 	private bool params_changed = false;
 	private int id;
 
-	private float full_size_x;
-	private float full_size_y;
-	private float full_size_z;
+	public float size_x;
+	public float size_y;
+	public float size_z;
 	
 
 
 	public System.Collections.Generic.List<Tube> export_dict;
+	public System.Collections.Generic.List<Cell> export_cells;
 
 	public void AdjustCellSize(float val){
 		cell_size = val; 
@@ -110,9 +114,10 @@ public class generate : MonoBehaviour {
 
 
 	public void GenerateCells (){
-		float size_x = vessel_length + 5.0f;
-		float size_y = (levels + 5.0f) * sector_length;
-		float size_z = (pairs_of_vessels + 1.0f) * pairs_dist;
+		
+		
+
+		export_cells = new List<Cell>();
 
 		float color;
 
@@ -133,12 +138,15 @@ public class generate : MonoBehaviour {
 			        sphere.transform.localScale = Vector3.one * scale;
 					sphere.GetComponent<Renderer> ().material = new Material(Shader.Find("Transparent/Diffuse"));
 					color = ((Mathf.Sin(x) + Mathf.Sin(z)) * cell_curv) + y*cell_size;
-					if(color > count_y * 0.7f){
+					if(color > count_y * 0.9f){
 						sphere.GetComponent<Renderer> ().material.color = new Color(0.4f,0.4f,0.4f,0.1f);
-					}else if (color > count_y * 0.2f){
+						export_cells.Add(new Cell(position, "epidermis"));
+					}else if (color > count_y * 0.1f){
 							sphere.GetComponent<Renderer> ().material.color = new Color(0.0f,1.0f,0.0f,0.1f);
+							export_cells.Add(new Cell(position, "dermis"));
 					}else {
 						sphere.GetComponent<Renderer> ().material.color = new Color(0.0f,0.0f,1.0f,0.1f);
+						export_cells.Add(new Cell(position, "hypodermis"));
 					}
 			        sphere.transform.parent = layer1.transform;
 				}
@@ -153,7 +161,9 @@ public class generate : MonoBehaviour {
 		GameObject.Destroy(vessel);
 		vessel = new GameObject("Vessel");
 
-		
+		size_x = vessel_length + 5.0f;
+		size_y = (levels * 1.3f) * sector_length;
+		size_z = (pairs_of_vessels + 1.0f) * pairs_dist;
 
 		//computed values
 		float grid_sectors_per_vessel = vessel_length / sector_length;
@@ -187,7 +197,7 @@ public class generate : MonoBehaviour {
 				split_tube = base_qv[numbers[k]];
 				split_point = new Vector3((split_tube.end.x + split_tube.start.x)/2.0f, (split_tube.end.y + split_tube.start.y)/2.0f, (split_tube.end.z + split_tube.start.z)/2.0f);
 				end_split_point = new Vector3(split_point.x,split_point.y + sector_length, split_point.z);
-				CreateCylinderBetweenPoints(split_point, end_split_point, max_thickness);
+				CreateCylinderBetweenPoints(split_point, end_split_point, max_thickness/2.0f);
 				export_dict.Add(new Tube(id, split_point, end_split_point, max_thickness/2.0f, -1, split_tube.id, -1, true));
 				id +=1;
 				qv.Enqueue(end_split_point);
@@ -195,7 +205,7 @@ public class generate : MonoBehaviour {
 				split_tube = base_qa[numbers[k]];
 				split_point = new Vector3((split_tube.end.x + split_tube.start.x)/2.0f, (split_tube.end.y + split_tube.start.y)/2.0f, (split_tube.end.z + split_tube.start.z)/2.0f);
 				end_split_point = new Vector3(split_point.x,split_point.y + sector_length, split_point.z);
-				CreateCylinderBetweenPoints(split_point, end_split_point, max_thickness);
+				CreateCylinderBetweenPoints(split_point, end_split_point, max_thickness/2.0f);
 				export_dict.Add(new Tube(id, split_point, end_split_point, max_thickness/2.0f, -1, split_tube.id, -1, true));
 				id +=1;
 				qa.Enqueue(end_split_point);
@@ -215,18 +225,18 @@ public class generate : MonoBehaviour {
 					endpoint2 = new Vector3(point.x + Random.Range(-max_distance_of_split,max_distance_of_split), point.y + sector_length, point.z + Random.Range(-1.0f * max_distance_of_split,max_distance_of_split));
 					qv.Enqueue(endpoint1);
 					qv.Enqueue(endpoint2);
-					CreateCylinderBetweenPoints(point, endpoint1, max_thickness/(1 + Mathf.Floor(lvl*0.2f)));
-					export_dict.Add(new Tube(id, point, endpoint1, (max_thickness/(1 + Mathf.Floor(lvl*0.2f)))/2.0f, split_tube.id));
+					CreateCylinderBetweenPoints(point, endpoint1, ((levels-lvl)*((max_thickness-min_thickness)/levels))/2.0f);
+					export_dict.Add(new Tube(id, point, endpoint1, ((levels-lvl)*((max_thickness-min_thickness)/levels))/2.0f, split_tube.id));
 					id +=1;
 					split_point = new Vector3((endpoint1.x + point.x)/2.0f, (endpoint1.y + point.y)/2.0f, (endpoint1.z + point.z)/2.0f);
-					CreateCylinderBetweenPoints(split_point, endpoint2, max_thickness/(1 + Mathf.Floor(lvl*0.2f))); 
-					export_dict.Add(new Tube(id, split_point, endpoint2, (max_thickness/(1 + Mathf.Floor(lvl*0.2f)))/2.0f,-1, id - 1 , -1, true));
+					CreateCylinderBetweenPoints(split_point, endpoint2, ((levels -lvl)*((max_thickness-min_thickness)/levels))/2.0f); 
+					export_dict.Add(new Tube(id, split_point, endpoint2, ((levels -lvl)*((max_thickness-min_thickness)/levels))/2.0f,-1, id - 1 , -1, true));
 					id +=1;
 				} else {
 					endpoint1 = new Vector3(point.x + Random.Range(-max_curvature,max_curvature), point.y + sector_length, point.z + Random.Range(-1.0f * max_curvature,max_curvature));
 					qv.Enqueue(endpoint1);
-					CreateCylinderBetweenPoints(point, endpoint1, max_thickness/(1 + Mathf.Floor(lvl*0.2f)));
-					export_dict.Add(new Tube(id, point, endpoint1, (max_thickness/(1 + Mathf.Floor(lvl*0.2f)))/2.0f, split_tube.id));
+					CreateCylinderBetweenPoints(point, endpoint1, ((levels -lvl)*((max_thickness-min_thickness)/levels))/2.0f);
+					export_dict.Add(new Tube(id, point, endpoint1, ((levels-lvl)*((max_thickness-min_thickness)/levels))/2.0f, split_tube.id));
 					id +=1;
 				}
 			}
@@ -244,18 +254,18 @@ public class generate : MonoBehaviour {
 					endpoint2 = new Vector3(point.x + Random.Range(-max_distance_of_split,max_distance_of_split), point.y + sector_length, point.z + Random.Range(-1.0f * max_distance_of_split,max_distance_of_split));
 					qa.Enqueue(endpoint1);
 					qa.Enqueue(endpoint2);
-					CreateCylinderBetweenPoints(point, endpoint1, max_thickness/(1 + Mathf.Floor(lvl*0.2f)));
-					export_dict.Add(new Tube(id, point, endpoint1, (max_thickness/(1 + Mathf.Floor(lvl*0.2f)))/2.0f, split_tube.id));
+					CreateCylinderBetweenPoints(point, endpoint1, ((levels -lvl)*((max_thickness-min_thickness)/levels))/2.0f);
+					export_dict.Add(new Tube(id, point, endpoint1, ((levels-lvl)*((max_thickness-min_thickness)/levels))/2.0f, split_tube.id));
 					id +=1;
 					split_point = new Vector3((endpoint1.x + point.x)/2.0f, (endpoint1.y + point.y)/2.0f, (endpoint1.z + point.z)/2.0f);
-					CreateCylinderBetweenPoints(split_point, endpoint2, max_thickness/(1 + Mathf.Floor(lvl*0.2f)));
-					export_dict.Add(new Tube(id, split_point, endpoint2, (max_thickness/(1 + Mathf.Floor(lvl*0.2f)))/2.0f, -1, id - 1 , -1, true));
+					CreateCylinderBetweenPoints(split_point, endpoint2, ((levels-lvl)*((max_thickness-min_thickness)/levels))/2.0f);
+					export_dict.Add(new Tube(id, split_point, endpoint2, ((levels-lvl)*((max_thickness-min_thickness)/levels))/2.0f, -1, id - 1 , -1, true));
 					id +=1;
 				} else {
 					endpoint1 = new Vector3(point.x + Random.Range(-max_curvature,max_curvature), point.y + sector_length, point.z + Random.Range(-1.0f * max_curvature,max_curvature));
 					qa.Enqueue(endpoint1);
-					CreateCylinderBetweenPoints(point, endpoint1, max_thickness/(1 + Mathf.Floor(lvl*0.2f)));
-					export_dict.Add(new Tube(id, point, endpoint1, (max_thickness/(1 + Mathf.Floor(lvl*0.2f)))/2.0f, split_tube.id));
+					CreateCylinderBetweenPoints(point, endpoint1, ((levels-lvl)*((max_thickness-min_thickness)/levels))/2.0f);
+					export_dict.Add(new Tube(id, point, endpoint1, ((levels-lvl)*((max_thickness-min_thickness)/levels))/2.0f, split_tube.id));
 					id +=1;
 				}
 			}
@@ -276,8 +286,8 @@ public class generate : MonoBehaviour {
 				endpoint1 = qv.Dequeue();
 				endpoint2 = qv.Dequeue();
 				connection_point = new Vector3((endpoint1.x + endpoint2.x)/2.0f, (endpoint1.y + endpoint2.y)/2.0f, (endpoint1.z + endpoint2.z)/2.0f);
-				tube = CreateLongCylinderWithReturn(endpoint1, connection_point, max_thickness/(1 + Mathf.Floor(levels*0.2f)), sector_length, Find_by_endpoint(endpoint1).id);
-				CreateLongCylinderWithMove(endpoint2, tube, max_thickness/(1 + Mathf.Floor(levels*0.2f)), sector_length, Find_by_endpoint(endpoint2).id, Find_by_endpoint(tube.end).id);
+				tube = CreateLongCylinderWithReturn(endpoint1, connection_point, min_thickness/2.0f, sector_length, Find_by_endpoint(endpoint1).id);
+				CreateLongCylinderWithMove(endpoint2, tube, min_thickness/2.0f, sector_length, Find_by_endpoint(endpoint2).id, Find_by_endpoint(tube.end).id);
 				qv.Enqueue(connection_point);
 				diff -=1;
 			}
@@ -286,8 +296,8 @@ public class generate : MonoBehaviour {
 				endpoint1 = qa.Dequeue();
 				endpoint2 = qa.Dequeue();
 				connection_point = new Vector3((endpoint1.x + endpoint2.x)/2.0f, (endpoint1.y + endpoint2.y)/2.0f, (endpoint1.z + endpoint2.z)/2.0f);
-				tube = CreateLongCylinderWithReturn(endpoint1, connection_point, max_thickness/(1 + Mathf.Floor(levels*0.2f)), sector_length, Find_by_endpoint(endpoint1).id);
-				CreateLongCylinderWithMove(endpoint2, tube, max_thickness/(1 + Mathf.Floor(levels*0.2f)), sector_length, Find_by_endpoint(endpoint2).id, Find_by_endpoint(tube.end).id);
+				tube = CreateLongCylinderWithReturn(endpoint1, connection_point, min_thickness/2.0f, sector_length, Find_by_endpoint(endpoint1).id);
+				CreateLongCylinderWithMove(endpoint2, tube, min_thickness/2.0f, sector_length, Find_by_endpoint(endpoint2).id, Find_by_endpoint(tube.end).id);
 				qa.Enqueue(connection_point);
 				diff +=1;
 			}
@@ -322,7 +332,7 @@ public class generate : MonoBehaviour {
 		while((qv.Count >= 1) && (qa.Count >= 1)){
 			endpoint1 = qa.Dequeue();
 			endpoint2 = qv.Dequeue();
-			CreateLongCylinder( endpoint1, endpoint2, max_thickness/(1 + Mathf.Floor(levels*0.2f)), sector_length, Find_by_endpoint(endpoint1).id);
+			CreateLongCylinder( endpoint1, endpoint2, min_thickness/2.0f, sector_length, Find_by_endpoint(endpoint1).id);
 		}
 
 	}
@@ -335,8 +345,9 @@ public class generate : MonoBehaviour {
 	}
 	
 
-	private void CreateCylinderBetweenPoints(Vector3 start, Vector3 end, float width)
+	private void CreateCylinderBetweenPoints(Vector3 start, Vector3 end, float r)
 	{
+		float width = r * 2.0f;
 		Vector3 offset = end - start;
 		Vector3 scale = new Vector3 (width, offset.magnitude / 2.0f, width);
 		Vector3 position = start + (offset / 2.0f);
