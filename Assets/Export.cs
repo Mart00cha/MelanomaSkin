@@ -85,6 +85,10 @@ public class Export : MonoBehaviour {
 		file1.WriteLine(" cell_r = {0}", script.cell_size/2.0f);
 		file1.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 3\r\n cell_shrink_speed = 0.01\r\n minimum_mitosis_r = 4.9\r\n force_rep_factor = 1e-016\r\n force_atr1_factor = 5e-018\r\n force_atr2_factor = 1e-018\r\n max_pressure = 1e-016\r\n o2_consumption = 8e-009\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
 
+		file1.WriteLine("Tissue\r\n{\r\n name = 'melanoma' \r\n type = NORMAL\r\n color = <0, 0, 0, 1>");
+		file1.WriteLine(" cell_r = {0}", script.cell_size/2.0f);
+		file1.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 3\r\n cell_shrink_speed = 0.01\r\n minimum_mitosis_r = 4.9\r\n force_rep_factor = 1e-016\r\n force_atr1_factor = 5e-018\r\n force_atr2_factor = 1e-018\r\n max_pressure = 1e-016\r\n o2_consumption = 8e-009\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
+
 		foreach(Cell cell in script.export_cells){
 			file1.WriteLine("Cell\r\n{");
 			file1.WriteLine("tissue = '{0}'", cell.tissue);

@@ -26,6 +26,7 @@ public class generate : MonoBehaviour {
 	public float max_curvature = 0.3f;
 	public float cell_size = 0.3f;
 	public float cell_curv = 0.0f;
+	private float cancer_cells = 3.0f;
 
 
 
@@ -114,7 +115,7 @@ public class generate : MonoBehaviour {
 
 
 	public void GenerateCells (){
-		
+		Debug.Log("generating");
 		
 
 		export_cells = new List<Cell>();
@@ -137,15 +138,21 @@ public class generate : MonoBehaviour {
 					GameObject sphere = Instantiate (cellPrefab, position, Quaternion.identity) as GameObject;
 			        sphere.transform.localScale = Vector3.one * scale;
 					sphere.GetComponent<Renderer> ().material = new Material(Shader.Find("Transparent/Diffuse"));
-					color = ((Mathf.Sin(x) + Mathf.Sin(z)) * cell_curv) + y*cell_size;
+					color = ((Mathf.Sin(x) + Mathf.Sin(z)) * cell_curv) + y;
 					if(color > count_y * 0.9f){
-						sphere.GetComponent<Renderer> ().material.color = new Color(0.4f,0.4f,0.4f,0.1f);
-						export_cells.Add(new Cell(position, "epidermis"));
+						if((x >= ((count_x)/2.0f) - cancer_cells + count_y - y) && (z>= ((count_z)/2.0f)- cancer_cells+ count_y - y) && (x <= ((count_x)/2.0f) + cancer_cells - count_y + y) && (z<= ((count_z)/2.0f) + cancer_cells- count_y + y)){
+							sphere.GetComponent<Renderer> ().material.color = new Color(1.0f,1.0f,1.0f,1.0f);
+							export_cells.Add(new Cell(position, "melanoma"));
+						}else{
+							sphere.GetComponent<Renderer> ().material.color = new Color(0.4f,0.4f,0.4f,0.05f);
+							export_cells.Add(new Cell(position, "epidermis"));
+						}
+
 					}else if (color > count_y * 0.1f){
-							sphere.GetComponent<Renderer> ().material.color = new Color(0.0f,1.0f,0.0f,0.1f);
+							sphere.GetComponent<Renderer> ().material.color = new Color(0.0f,1.0f,0.0f,0.05f);
 							export_cells.Add(new Cell(position, "dermis"));
 					}else {
-						sphere.GetComponent<Renderer> ().material.color = new Color(0.0f,0.0f,1.0f,0.1f);
+						sphere.GetComponent<Renderer> ().material.color = new Color(0.0f,0.0f,1.0f,0.05f);
 						export_cells.Add(new Cell(position, "hypodermis"));
 					}
 			        sphere.transform.parent = layer1.transform;
@@ -162,7 +169,7 @@ public class generate : MonoBehaviour {
 		vessel = new GameObject("Vessel");
 
 		size_x = vessel_length + 5.0f;
-		size_y = (levels * 1.3f) * sector_length;
+		size_y = levels * 1.3f * sector_length;
 		size_z = (pairs_of_vessels + 1.0f) * pairs_dist;
 
 		//computed values
