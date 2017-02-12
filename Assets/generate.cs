@@ -15,7 +15,7 @@ public class generate : MonoBehaviour {
 	public float pairs_of_vessels = 2.0f;
 	public float ups_per_vessel = 3.0f;
 	public float sector_length = 0.5f;
-	public float vessel_length = 30.0f;
+	public float vessel_length = 15.0f;
 	public float artery_vein_dist = 3.0f;
 	public float pairs_dist = 5.0f;
 	public float max_thickness = 0.5f;
@@ -27,6 +27,7 @@ public class generate : MonoBehaviour {
 	public float cell_size = 0.3f;
 	public float cell_curv = 0.0f;
 	private float cancer_cells = 3.0f;
+	public float melanoma = 1.0f;
 
 
 
@@ -48,6 +49,10 @@ public class generate : MonoBehaviour {
 
 	public void AdjustCellCurv(float val){
 		cell_curv = val; 
+	}
+
+	public void AdjustMelanoma(float val){
+		melanoma = val; 
 	}
 
 	public void AdjustPairs(float val){
@@ -106,6 +111,8 @@ public class generate : MonoBehaviour {
 		params_changed = true;
 	}
 
+	
+
 	void Start(){
 		vessel = new GameObject("Vessel");
 		Generate();
@@ -131,16 +138,18 @@ public class generate : MonoBehaviour {
 		float count_z = size_z/cell_size;
 
 
-		for(float x=0.0f; x<=count_x; x+=1){
+
+
+		for(float x=3.5f; x<=count_x+3.5f; x+=1){
 			for(float z = 0.0f; z<= count_z; z+=1){
 				for(float y = 0.0f; y<= count_y; y+=1){
 					Vector3 position = new Vector3((x-2.0f)*cell_size, (y-1.0f)*cell_size, z*cell_size + pairs_dist);
 					GameObject sphere = Instantiate (cellPrefab, position, Quaternion.identity) as GameObject;
 			        sphere.transform.localScale = Vector3.one * scale;
 					sphere.GetComponent<Renderer> ().material = new Material(Shader.Find("Transparent/Diffuse"));
-					color = ((Mathf.Sin(x) + Mathf.Sin(z)) * cell_curv) + y;
+					color = ((Mathf.Sin(Random.Range(0.1f, 0.8f) * x) + Mathf.Sin(Random.Range(0.1f, 0.8f) * z)) * cell_curv) + y;
 					if(color > count_y * 0.9f){
-						if((x >= ((count_x)/2.0f) - cancer_cells + count_y - y) && (z>= ((count_z)/2.0f)- cancer_cells+ count_y - y) && (x <= ((count_x)/2.0f) + cancer_cells - count_y + y) && (z<= ((count_z)/2.0f) + cancer_cells- count_y + y)){
+						if((melanoma > 0.0f) && (x >= ((count_x)/2.0f) - cancer_cells + count_y - y) && (z>= ((count_z)/2.0f)- cancer_cells+ count_y - y) && (x <= ((count_x)/2.0f) + cancer_cells - count_y + y) && (z<= ((count_z)/2.0f) + cancer_cells- count_y + y)){
 							sphere.GetComponent<Renderer> ().material.color = new Color(1.0f,1.0f,1.0f,1.0f);
 							export_cells.Add(new Cell(position, "melanoma"));
 						}else{
@@ -159,6 +168,8 @@ public class generate : MonoBehaviour {
 				}
 			}
 		}
+
+		Debug.Log(export_cells.Count);
 		
 	}
 
@@ -168,7 +179,7 @@ public class generate : MonoBehaviour {
 		GameObject.Destroy(vessel);
 		vessel = new GameObject("Vessel");
 
-		size_x = vessel_length + 5.0f;
+		size_x = vessel_length - 1.0f;
 		size_y = levels * 1.3f * sector_length;
 		size_z = (pairs_of_vessels + 1.0f) * pairs_dist;
 
@@ -197,8 +208,7 @@ public class generate : MonoBehaviour {
 			export_dict.AddRange(base_qv);
 			export_dict.AddRange(base_qa);
 			var rnd = new System.Random();
-			var numbers = new List<int>(Enumerable.Range(0, base_qv.Count).OrderBy(item => rnd.Next()));
-
+			var numbers = new List<int>(Enumerable.Range(base_qv.Count/6, base_qv.Count - 2*(base_qv.Count/6)).OrderBy(item => rnd.Next()));
 
 			for(int k=1; k<= ups_per_vessel; k++){
 				split_tube = base_qv[numbers[k]];
