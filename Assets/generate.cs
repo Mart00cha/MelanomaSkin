@@ -143,7 +143,7 @@ public class generate : MonoBehaviour {
 		for(float x=3.5f; x<=count_x+3.5f; x+=1){
 			for(float z = 0.0f; z<= count_z; z+=1){
 				for(float y = 0.0f; y<= count_y; y+=1){
-					Vector3 position = new Vector3((x-2.0f)*cell_size, (y-1.0f)*cell_size, z*cell_size + pairs_dist);
+					Vector3 position = new Vector3(((x-2.0f)*cell_size) - size_x/2.0f, ((y-1.0f)*cell_size)- size_y/2.0f, (z*cell_size + pairs_dist) - ((size_z - pairs_dist/2.0f)/2.0f));
 					GameObject sphere = Instantiate (cellPrefab, position, Quaternion.identity) as GameObject;
 			        sphere.transform.localScale = Vector3.one * scale;
 					sphere.GetComponent<Renderer> ().material = new Material(Shader.Find("Transparent/Diffuse"));
@@ -181,7 +181,7 @@ public class generate : MonoBehaviour {
 
 		size_x = vessel_length - 1.0f;
 		size_y = levels * 1.3f * sector_length;
-		size_z = (pairs_of_vessels + 1.0f) * pairs_dist;
+		size_z = ((pairs_of_vessels) * (pairs_dist + artery_vein_dist));
 
 		//computed values
 		float grid_sectors_per_vessel = vessel_length / sector_length;
@@ -203,15 +203,17 @@ public class generate : MonoBehaviour {
 
 		//create base vessels
 		for(float i=1.0f; i<= pairs_of_vessels; i++){
-			base_qv = CreateLongCylinderWithReturnPoints(new Vector3(0,0, i*(pairs_dist+artery_vein_dist)), new Vector3(vessel_length, 0, i*(pairs_dist+artery_vein_dist)), max_thickness, sector_length);
-			base_qa = CreateLongCylinderWithReturnPoints(new Vector3(0,0, i*(pairs_dist+artery_vein_dist)+artery_vein_dist), new Vector3(vessel_length,0, i*(pairs_dist+artery_vein_dist)+artery_vein_dist), max_thickness, sector_length);
+			base_qv = CreateLongCylinderWithReturnPoints(new Vector3(-size_x/2.0f,-size_y/2.0f, (i*(pairs_dist+artery_vein_dist))- size_z/2.0f), new Vector3(vessel_length - size_x/2.0f, -size_y/2.0f, (i*(pairs_dist+artery_vein_dist))- size_z/2.0f), max_thickness, sector_length);
+			base_qa = CreateLongCylinderWithReturnPoints(new Vector3(-size_x/2.0f,-size_y/2.0f, (i*(pairs_dist+artery_vein_dist)+artery_vein_dist) - size_z/2.0f), new Vector3(vessel_length - size_x/2.0f,-size_y/2.0f, (i*(pairs_dist+artery_vein_dist)+artery_vein_dist)- size_z/2.0f), max_thickness, sector_length);
 			export_dict.AddRange(base_qv);
 			export_dict.AddRange(base_qa);
-			var rnd = new System.Random();
-			var numbers = new List<int>(Enumerable.Range(base_qv.Count/6, base_qv.Count - 2*(base_qv.Count/6)).OrderBy(item => rnd.Next()));
+			
 
+			int step = Mathf.FloorToInt(base_qv.Count/ups_per_vessel);
+			int move;
 			for(int k=1; k<= ups_per_vessel; k++){
-				split_tube = base_qv[numbers[k]];
+				move = Random.Range(-step/3, step/3);
+				split_tube = base_qv[step/2 + (k-1)*step + move];
 				split_point = new Vector3((split_tube.end.x + split_tube.start.x)/2.0f, (split_tube.end.y + split_tube.start.y)/2.0f, (split_tube.end.z + split_tube.start.z)/2.0f);
 				end_split_point = new Vector3(split_point.x,split_point.y + sector_length, split_point.z);
 				CreateCylinderBetweenPoints(split_point, end_split_point, max_thickness/2.0f);
@@ -219,7 +221,8 @@ public class generate : MonoBehaviour {
 				id +=1;
 				qv.Enqueue(end_split_point);
 
-				split_tube = base_qa[numbers[k]];
+				move = Random.Range(-step/3, step/3);
+				split_tube = base_qa[step/2 + (k-1)*step + move];
 				split_point = new Vector3((split_tube.end.x + split_tube.start.x)/2.0f, (split_tube.end.y + split_tube.start.y)/2.0f, (split_tube.end.z + split_tube.start.z)/2.0f);
 				end_split_point = new Vector3(split_point.x,split_point.y + sector_length, split_point.z);
 				CreateCylinderBetweenPoints(split_point, end_split_point, max_thickness/2.0f);
