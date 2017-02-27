@@ -1703,7 +1703,7 @@ MonoBehaviour:
   m_MinValue: 1
   m_MaxValue: 55
   m_WholeNumbers: 0
-  m_Value: 15
+  m_Value: 10
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -5420,7 +5420,7 @@ MonoBehaviour:
   m_MinValue: 1
   m_MaxValue: 4
   m_WholeNumbers: 1
-  m_Value: 2
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -8303,10 +8303,10 @@ MonoBehaviour:
   cellPrefab: {fileID: 1000011166213580, guid: ce54bc4af857b4f3dbb2d398c3a1f061, type: 2}
   vessel: {fileID: 0}
   layer1: {fileID: 0}
-  pairs_of_vessels: 2
+  pairs_of_vessels: 1
   ups_per_vessel: 3
   sector_length: 0.5
-  vessel_length: 15
+  vessel_length: 10
   artery_vein_dist: 2
   pairs_dist: 3
   max_thickness: 0.5

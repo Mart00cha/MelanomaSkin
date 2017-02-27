@@ -19,35 +19,35 @@ public class Export : MonoBehaviour {
 		file.WriteLine("Visual\r\n{\r\n bkg_color = <0.18, 0.24, 0.3, 1>\r\n axis_x_color = <0.75, 0, 0, 1>\r\n axis_y_color = <0, 0.75, 0, 1>\r\n axis_z_color = <0, 0, 0.75, 1>\r\n comp_box_color = <0.5, 0.5, 0.5, 1>\r\n in_barrier_color = <1, 1, 0, 0.5>\r\n out_barrier_color = <1, 0, 0, 0.5>\r\n cell_alive_color = <0, 0, 1, 1>\r\n cell_hypoxia_color = <0, 1, 0, 1>\r\n cell_apoptosis_color = <0.5, 0.5, 0.5, 1>\r\n cell_necrosis_color = <0.2, 0.2, 0.2, 1>\r\n tube_color = <0.65, 0, 0, 1>\r\n clip_plane_color = <1, 1, 1, 1>\r\n navigator_color = <1, 0.64, 0, 0.75>\r\n boxes_color = <1, 1, 1, 0.25>\r\n}");
 
 		file.WriteLine("Simulation\r\n{\r\n dimensions = 3\r\n sim_phases = -1\r\n time_step = 1\r\n time = 0\r\n stop_time = inf");
-		file.WriteLine(" comp_box_from = <{0}, {1}, {2}>", (-2.0f-(script.cell_size/2.0f)) * 100.0f, (-1.0f-(script.cell_size/2.0f)) * 100.0f, (5.0f-(script.cell_size/2.0f)) * 100.0f);
-		file.WriteLine(" comp_box_to = <{0}, {1}, {2}>", (-2.0f + script.size_x + (script.cell_size/2.0f)) * 100.0f, (-1.0f + script.size_y + (script.cell_size/2.0f)) * 100.0f, (5.0f + script.size_z+ (script.cell_size/2.0f)) * 100.0f);
+		file.WriteLine(" comp_box_from = <{0}, {1}, {2}>", (-script.size_x /2.0f) * 100.0f, (-script.size_y /2.0f) * 100.0f, (-script.size_z /2.0f) * 100.0f);
+		file.WriteLine(" comp_box_to = <{0}, {1}, {2}>", (script.size_x /2.0f) * 100.0f , (script.size_y /2.0f) * 100.0f, (script.size_z /2.0f) * 100.0f);
 		file.WriteLine(" box_size = 100");
-		file.WriteLine(" max_cells_per_box = 100\r\n force_r_cut = 10\r\n max_tube_chains = 1000\r\n max_tube_merge = 20\r\n save_statistics = 0\r\n save_povray = 0\r\n save_ag = 100\r\n graph_sampling = 10\r\n diffusion_coeff_O2 = 4000\r\n diffusion_coeff_TAF = 1000\r\n diffusion_coeff_Pericytes = 10\r\n}");
+		file.WriteLine(" max_cells_per_box = 100\r\n force_r_cut = 10\r\n max_tube_chains = 1000\r\n max_tube_merge = 20\r\n save_statistics = 0\r\n save_povray = 0\r\n save_ag = 0\r\n graph_sampling = 10\r\n diffusion_coeff_O2 = 4000\r\n diffusion_coeff_TAF = 1000\r\n diffusion_coeff_Pericytes = 10\r\n}");
 
 		file.WriteLine();
 
 		file.WriteLine("TubularSystem\r\n{\r\n force_chain_attr_factor = 1e-014\r\n force_length_keep_factor = 1e-014\r\n force_angle_factor = 5e-016\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n density = 1\r\n lengthening_speed = 0.1\r\n thickening_speed = 0.0001\r\n minimum_interphase_time = 1000\r\n TAFtrigger = 0.2\r\n minimum_blood_flow = 0.01\r\n time_to_degradation = inf\r\n o2_production = 3e-022\r\n}");
 
 		file.WriteLine("Barrier\r\n{\r\n type = KEEP_IN");
-		file.WriteLine(" from = <{0}, {1}, {2}>", (-2.0f-(script.cell_size/2.0f)) * 100.0f, (-1.0f-(script.cell_size/2.0f)) * 100.0f, (5.0f-(script.cell_size/2.0f)) * 100.0f);
-		file.WriteLine(" to = <{0}, {1}, {2}>", (-2.0f + script.size_x + (script.cell_size/2.0f)) * 100.0f, (-1.0f + script.size_y + (script.cell_size/2.0f)) * 100.0f, (5.0f + script.size_z+ (script.cell_size/2.0f)) * 100.0f);
+		file.WriteLine(" from = <{0}, {1}, {2}>", (-script.size_x /2.0f) * 100.0f, (-script.size_y /2.0f) * 100.0f, (-script.size_z /2.0f) * 100.0f);
+		file.WriteLine(" to = <{0}, {1}, {2}>", (script.size_x /2.0f) * 100.0f, (script.size_y /2.0f) * 100.0f, (script.size_z /2.0f) * 100.0f);
 		file.WriteLine(" trans = <1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1>\r\n}");
 
 		file.WriteLine("Tissue\r\n{\r\n name = \"epidermis\" \r\n type = NORMAL\r\n color = <0.5, 0.5, 0.5, 1>");
 		file.WriteLine(" cell_r = {0}", script.cell_size * 100.0f/2.0f);
-		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 4.9\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 3e-010\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
+		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 14\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 3e-010\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
 
 		file.WriteLine("Tissue\r\n{\r\n name = \"dermis\" \r\n type = NORMAL\r\n color = <0, 1, 0, 1>");
 		file.WriteLine(" cell_r = {0}", script.cell_size * 100.0f/2.0f);
-		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 4.9\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 3e-010\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
+		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 14\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 3e-010\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
 
 		file.WriteLine("Tissue\r\n{\r\n name = \"hypodermis\" \r\n type = NORMAL\r\n color = <0, 0, 1, 1>");
 		file.WriteLine(" cell_r = {0}", script.cell_size * 100.0f/2.0f);
-		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 4.9\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 3e-010\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
+		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 14\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 3e-010\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
 
 		file.WriteLine("Tissue\r\n{\r\n name = \"melanoma\" \r\n type = TUMOR\r\n color = <0, 0, 0, 1>");
 		file.WriteLine(" cell_r = {0}", script.cell_size * 100.0f/2.0f);
-		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 4.9\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 3e-010\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
+		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 14\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 3e-010\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
 
 
 		Rename_ids(script.export_dict);

@@ -16,8 +16,8 @@ public class generate : MonoBehaviour {
 	public float ups_per_vessel = 3.0f;
 	public float sector_length = 0.5f;
 	public float vessel_length = 15.0f;
-	public float artery_vein_dist = 3.0f;
-	public float pairs_dist = 5.0f;
+	public float artery_vein_dist = 2.0f;
+	public float pairs_dist = 3.0f;
 	public float max_thickness = 0.5f;
 	public float min_thickness = 0.05f;
 	public float levels = 20.0f;
@@ -37,6 +37,7 @@ public class generate : MonoBehaviour {
 	public float size_x;
 	public float size_y;
 	public float size_z;
+	public float move_z;
 	
 
 
@@ -138,12 +139,10 @@ public class generate : MonoBehaviour {
 		float count_z = size_z/cell_size;
 
 
-
-
-		for(float x=3.5f; x<=count_x+3.5f; x+=1){
+		for(float x=0.0f; x<=count_x; x+=1){
 			for(float z = 0.0f; z<= count_z; z+=1){
 				for(float y = 0.0f; y<= count_y; y+=1){
-					Vector3 position = new Vector3(((x-2.0f)*cell_size) - size_x/2.0f, ((y-1.0f)*cell_size)- size_y/2.0f, (z*cell_size + pairs_dist) - ((size_z - pairs_dist/2.0f)/2.0f));
+					Vector3 position = new Vector3(((x)*cell_size) - size_x/2.0f, ((y)*cell_size)- size_y/2.0f, z*cell_size - move_z - pairs_dist/2.0f);
 					GameObject sphere = Instantiate (cellPrefab, position, Quaternion.identity) as GameObject;
 			        sphere.transform.localScale = Vector3.one * scale;
 					sphere.GetComponent<Renderer> ().material = new Material(Shader.Find("Transparent/Diffuse"));
@@ -179,7 +178,7 @@ public class generate : MonoBehaviour {
 		GameObject.Destroy(vessel);
 		vessel = new GameObject("Vessel");
 
-		size_x = vessel_length - 1.0f;
+		size_x = vessel_length;
 		size_y = levels * 1.3f * sector_length;
 		size_z = ((pairs_of_vessels) * (pairs_dist + artery_vein_dist));
 
@@ -201,10 +200,12 @@ public class generate : MonoBehaviour {
 		export_dict = new List<Tube>();
 		id = 0;
 
+		move_z = pairs_of_vessels * artery_vein_dist / 2.0f + (pairs_of_vessels-1.0f) * pairs_dist / 2.0f;
+
 		//create base vessels
 		for(float i=1.0f; i<= pairs_of_vessels; i++){
-			base_qv = CreateLongCylinderWithReturnPoints(new Vector3(-size_x/2.0f,-size_y/2.0f, (i*(pairs_dist+artery_vein_dist))- size_z/2.0f), new Vector3(vessel_length - size_x/2.0f, -size_y/2.0f, (i*(pairs_dist+artery_vein_dist))- size_z/2.0f), max_thickness, sector_length);
-			base_qa = CreateLongCylinderWithReturnPoints(new Vector3(-size_x/2.0f,-size_y/2.0f, (i*(pairs_dist+artery_vein_dist)+artery_vein_dist) - size_z/2.0f), new Vector3(vessel_length - size_x/2.0f,-size_y/2.0f, (i*(pairs_dist+artery_vein_dist)+artery_vein_dist)- size_z/2.0f), max_thickness, sector_length);
+			base_qv = CreateLongCylinderWithReturnPoints(new Vector3(-size_x/2.0f,-size_y/2.0f, ((i-1.0f)*(pairs_dist+artery_vein_dist))- move_z), new Vector3(vessel_length - size_x/2.0f, -size_y/2.0f, ((i-1.0f)*(pairs_dist+artery_vein_dist))- move_z), max_thickness, sector_length);
+			base_qa = CreateLongCylinderWithReturnPoints(new Vector3(-size_x/2.0f,-size_y/2.0f, ((i-1.0f)*(pairs_dist+artery_vein_dist)+artery_vein_dist) - move_z), new Vector3(vessel_length - size_x/2.0f,-size_y/2.0f, ((i-1.0f)*(pairs_dist+artery_vein_dist)+artery_vein_dist)- move_z), max_thickness, sector_length);
 			export_dict.AddRange(base_qv);
 			export_dict.AddRange(base_qa);
 			
