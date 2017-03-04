@@ -38,6 +38,9 @@ public class generate : MonoBehaviour {
 	public float size_y;
 	public float size_z;
 	public float move_z;
+	public float acc_x = 0.0f;
+	public float acc_y = 0.0f;
+	public float acc_z = 0.0f;
 	
 
 
@@ -134,31 +137,48 @@ public class generate : MonoBehaviour {
 		layer1 = new GameObject("Layer1");
 		float scale = cell_size;
 
-		float count_x = size_x/cell_size;
+		float count_x = (2.0f * size_x) / (1.73205080757f * cell_size);
 		float count_y = size_y/cell_size;
-		float count_z = size_z/cell_size;
+		float count_z = (2.0f * size_z) / (1.73205080757f * cell_size);   
 
 		float pos_x;
+		float initial_move_z;
+		float initial_move_y;
+		
 		for(float x=0.0f; x<=count_x; x+=1){
 			pos_x = ((x)*cell_size) - size_x/2.0f;
-			CreateLayerOfCells(x,scale,count_x, count_y, count_z, pos_x);
+			acc_x -= 0.13397459621f * cell_size; //magic number is (2-sqrt(3))/2
+			if( x%2 == 0 ){
+				initial_move_z = cell_size/2.0f;
+				initial_move_y = cell_size/2.0f;
+			}else{
+				initial_move_z = 0.0f;
+				initial_move_y = 0.0f;
+			}
+			CreateLayerOfCells(x,scale,count_x, count_y, count_z, pos_x, initial_move_z, initial_move_y, acc_x, acc_z);
 		}
 
 		Debug.Log(export_cells.Count);
 		
 	}
 
-	void CreateLayerOfCells(float x, float scale, float count_x, float count_y, float count_z , float pos_x){
+	void CreateLayerOfCells(float x, float scale, float count_x, float count_y, float count_z , float pos_x, float initial_move_z,float initial_move_y, float acc_x, float acc_z){
 		float pos_z;
 		for(float z = 0.0f; z<= count_z; z+=1){
 				pos_z = z*cell_size - move_z - pairs_dist/2.0f;
-				CreateLineOfCells(x,z,scale,count_x, count_y, count_z, pos_x, pos_z);
+				acc_z -= 0.13397459621f * cell_size;
+				if( z%2 == 0 ){
+					initial_move_y += cell_size/2.0f;
+				}else{
+					initial_move_y -= cell_size/2.0f;
+				}
+				CreateLineOfCells(x,z,scale,count_x, count_y, count_z, pos_x, pos_z + initial_move_z, initial_move_y, acc_x, acc_z);
 		}
 	}
 
-	void CreateLineOfCells(float x, float z, float scale, float count_x, float count_y, float count_z, float pos_x, float pos_z){
+	void CreateLineOfCells(float x, float z, float scale, float count_x, float count_y, float count_z, float pos_x, float pos_z, float initial_move_y, float acc_x, float acc_z){
 		for(float y = 0.0f; y<= count_y; y+=1){
-			Vector3 position = new Vector3(pos_x, ((y)*cell_size)- size_y/2.0f, pos_z);
+			Vector3 position = new Vector3(pos_x + acc_x, initial_move_y + ((y)*cell_size)- size_y/2.0f, pos_z + acc_z);
 			CreateCell(x,y,z,scale,count_x, count_y, count_z, position);
 		}
 	}
