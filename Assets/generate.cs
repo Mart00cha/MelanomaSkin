@@ -38,6 +38,7 @@ public class generate : MonoBehaviour {
 	public float size_y;
 	public float size_z;
 	public float move_z;
+	public float move_y;
 	public float acc_x = 0.0f;
 	public float acc_y = 0.0f;
 	public float acc_z = 0.0f;
@@ -237,11 +238,12 @@ public class generate : MonoBehaviour {
 		id = 0;
 
 		move_z = pairs_of_vessels * artery_vein_dist / 2.0f + (pairs_of_vessels-1.0f) * pairs_dist / 2.0f;
+		move_y = 1.2f * max_thickness;
 
 		//create base vessels
 		for(float i=1.0f; i<= pairs_of_vessels; i++){
-			base_qv = CreateLongCylinderWithReturnPoints(new Vector3(-size_x/2.0f,-size_y/2.0f, ((i-1.0f)*(pairs_dist+artery_vein_dist))- move_z), new Vector3(vessel_length - size_x/2.0f, -size_y/2.0f, ((i-1.0f)*(pairs_dist+artery_vein_dist))- move_z), max_thickness, sector_length);
-			base_qa = CreateLongCylinderWithReturnPoints(new Vector3(-size_x/2.0f,-size_y/2.0f, ((i-1.0f)*(pairs_dist+artery_vein_dist)+artery_vein_dist) - move_z), new Vector3(vessel_length - size_x/2.0f,-size_y/2.0f, ((i-1.0f)*(pairs_dist+artery_vein_dist)+artery_vein_dist)- move_z), max_thickness, sector_length);
+			base_qv = CreateLongCylinderWithReturnPoints(new Vector3(-size_x/2.0f,(-size_y/2.0f) + move_y, ((i-1.0f)*(pairs_dist+artery_vein_dist))- move_z), new Vector3(vessel_length - size_x/2.0f, (-size_y/2.0f)+move_y, ((i-1.0f)*(pairs_dist+artery_vein_dist))- move_z), max_thickness, sector_length);
+			base_qa = CreateLongCylinderWithReturnPoints(new Vector3(-size_x/2.0f,(-size_y/2.0f) + move_y, ((i-1.0f)*(pairs_dist+artery_vein_dist)+artery_vein_dist) - move_z), new Vector3(vessel_length - size_x/2.0f,(-size_y/2.0f)+move_y, ((i-1.0f)*(pairs_dist+artery_vein_dist)+artery_vein_dist)- move_z), max_thickness, sector_length);
 			export_dict.AddRange(base_qv);
 			export_dict.AddRange(base_qa);
 			
