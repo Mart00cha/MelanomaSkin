@@ -9,6 +9,8 @@ public class Export : MonoBehaviour {
 		GameObject vessel = GameObject.Find("GameObject");
         generate script = vessel.GetComponent<generate>();
 
+        int time_of_death = 3600;
+
 	    //create Folder
 	    if (!Directory.Exists ("./Data/")) {
 	 
@@ -35,19 +37,24 @@ public class Export : MonoBehaviour {
 
 		file.WriteLine("Tissue\r\n{\r\n name = \"epidermis\" \r\n type = NORMAL\r\n color = <0.882353, 0.847059, 0.65098, 1>");
 		file.WriteLine(" cell_r = {0}", script.cell_size * 100.0f/2.0f);
-		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 14\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 0\r\n o2_hypoxia = 0\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
+		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 600\r\n time_to_apoptosis = {0}", time_of_death);
+		file.WriteLine(" time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 14\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 0\r\n o2_hypoxia = 0\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
+		
 
 		file.WriteLine("Tissue\r\n{\r\n name = \"dermis\" \r\n type = NORMAL\r\n color = <1, 0.784314, 0.352941, 1>");
 		file.WriteLine(" cell_r = {0}", script.cell_size * 100.0f/2.0f);
-		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 14\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 5e-011\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
+		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 600\r\n time_to_apoptosis = {0}", time_of_death);
+		file.WriteLine(" time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 14\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 5e-011\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
 
 		file.WriteLine("Tissue\r\n{\r\n name = \"hypodermis\" \r\n type = NORMAL\r\n color = <1, 0.435294, 0.435294, 1>");
 		file.WriteLine(" cell_r = {0}", script.cell_size * 100.0f/2.0f);
-		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 14\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 1e-010\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
+		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 600\r\n time_to_apoptosis = {0}", time_of_death);
+		file.WriteLine(" time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 14\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 1e-010\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
 
 		file.WriteLine("Tissue\r\n{\r\n name = \"melanoma\" \r\n type = TUMOR\r\n color = <0.47451, 0.247059, 0.0862745, 1>");
 		file.WriteLine(" cell_r = {0}", script.cell_size * 100.0f/2.0f);
-		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 3600\r\n time_to_apoptosis = inf\r\n time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 14\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 1e-010\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
+		file.WriteLine(" density = 1\r\n cell_grow_speed = 0.01\r\n minimum_interphase_time = 600\r\n time_to_apoptosis= {0}", time_of_death);
+		file.WriteLine(" time_to_necrosis = 200\r\n time_in_necrosis = 200\r\n dead_r = 8\r\n cell_shrink_speed = 0.1\r\n minimum_mitosis_r = 14\r\n force_rep_factor = 1e-014\r\n force_atr1_factor = 5e-015\r\n force_atr2_factor = 1e-015\r\n max_pressure = 1e-016\r\n o2_consumption = 1e-010\r\n o2_hypoxia = 0.01\r\n pericyte_production = 0.0001\r\n time_to_necrosis_var = 0\r\n force_dpd_factor = 0\r\n dpd_temperature = 0\r\n}");
 
 
 		Rename_ids(script.export_dict);
@@ -90,13 +97,18 @@ public class Export : MonoBehaviour {
 			file.WriteLine();
 			file.WriteLine("}");
 		}
+		int age;
 
 		foreach(Cell cell in script.export_cells){
 			file.WriteLine("Cell\r\n{");
 			file.WriteLine("tissue = \"{0}\"", cell.tissue);
  			file.WriteLine("state = ALIVE");
  			file.WriteLine("pos = <{0}, {1}, {2}>", cell.position.x * 100.0f, cell.position.y * 100.0f, cell.position.z * 100.0f);
- 			file.WriteLine("conc_O2 = 0.5\r\n}");
+ 			file.WriteLine("conc_O2 = 0.5");
+ 			age = Random.Range(0, time_of_death);
+ 			file.WriteLine("age = {0}", age);
+  			file.WriteLine("state_age = {0}", age);
+  			file.WriteLine("}");
 		}
 
 
