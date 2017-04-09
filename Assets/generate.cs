@@ -178,30 +178,46 @@ public class generate : MonoBehaviour {
 	}
 
 	void CreateLineOfCells(float x, float z, float scale, float count_x, float count_y, float count_z, float pos_x, float pos_z, float initial_move_y, float acc_x, float acc_z){
+		float color;
+		string tissue;
 		for(float y = 0.0f; y<= count_y; y+=1){
 			Vector3 position = new Vector3(pos_x + acc_x, initial_move_y + ((y)*cell_size)- size_y/2.0f, pos_z + acc_z);
-			CreateCell(x,y,z,scale,count_x, count_y, count_z, position);
+			color = ((Mathf.Sin(Random.Range(0.1f, 0.8f) * x) + Mathf.Sin(Random.Range(0.1f, 0.8f) * z)) * cell_curv) + y;
+				if(color > count_y * 0.9f){
+					if((melanoma > 0.0f) && (x >= ((count_x)/2.0f) - cancer_cells + count_y - y) && (z>= ((count_z)/2.0f)- cancer_cells+ count_y - y) && (x <= ((count_x)/2.0f) + cancer_cells - count_y + y) && (z<= ((count_z)/2.0f) + cancer_cells- count_y + y)){
+						tissue = "melanoma";
+					}else{
+						tissue = "epidermis";
+					}
+				}else if (color > count_y * 0.87f){
+						tissue = "membrane";
+				}else if (color > count_y * 0.1f){
+						tissue = "dermis";
+				}else {
+					tissue = "hypodermis";
+				}
+			CreateCell(x,y,z,scale,count_x, count_y, count_z, position, tissue);
 		}
 	}
 
-	void CreateCell(float x, float y, float z, float scale, float count_x, float count_y, float count_z, Vector3 position){
+	void CreateCell(float x, float y, float z, float scale, float count_x, float count_y, float count_z, Vector3 position, string tissue){
 		float color;
 		GameObject sphere = Instantiate (cellPrefab, position, Quaternion.identity) as GameObject;
         sphere.transform.localScale = Vector3.one * scale;
 		sphere.GetComponent<Renderer> ().material = new Material(Shader.Find("Transparent/Diffuse"));
-		color = ((Mathf.Sin(Random.Range(0.1f, 0.8f) * x) + Mathf.Sin(Random.Range(0.1f, 0.8f) * z)) * cell_curv) + y;
-		if(color > count_y * 0.9f){
-			if((melanoma > 0.0f) && (x >= ((count_x)/2.0f) - cancer_cells + count_y - y) && (z>= ((count_z)/2.0f)- cancer_cells+ count_y - y) && (x <= ((count_x)/2.0f) + cancer_cells - count_y + y) && (z<= ((count_z)/2.0f) + cancer_cells- count_y + y)){
-				sphere.GetComponent<Renderer> ().material.color = new Color(1.0f,1.0f,1.0f,1.0f);
-				export_cells.Add(new Cell(position, "melanoma"));
-			}else{
-				sphere.GetComponent<Renderer> ().material.color = new Color(0.4f,0.4f,0.4f,0.05f);
-				export_cells.Add(new Cell(position, "epidermis"));
-			}
 
-		}else if (color > count_y * 0.1f){
+		if(tissue == "melanoma"){
+			sphere.GetComponent<Renderer> ().material.color = new Color(1.0f,1.0f,1.0f,1.0f);
+			export_cells.Add(new Cell(position, "melanoma"));
+		}else if(tissue == "epidermis"){
+			sphere.GetComponent<Renderer> ().material.color = new Color(0.4f,0.4f,0.4f,0.05f);
+			export_cells.Add(new Cell(position, "epidermis"));
+		}else if (tissue == "dermis"){
 				sphere.GetComponent<Renderer> ().material.color = new Color(0.0f,1.0f,0.0f,0.05f);
 				export_cells.Add(new Cell(position, "dermis"));
+		}else if (tissue == "membrane"){
+				sphere.GetComponent<Renderer> ().material.color = new Color(1.0f,0.1f,0.1f,0.05f);
+				export_cells.Add(new Cell(position, "membrane"));
 		}else {
 			sphere.GetComponent<Renderer> ().material.color = new Color(0.0f,0.0f,1.0f,0.05f);
 			export_cells.Add(new Cell(position, "hypodermis"));
