@@ -183,19 +183,11 @@ public class generate : MonoBehaviour {
 		for(float y = 0.0f; y<= count_y; y+=1){
 			Vector3 position = new Vector3(pos_x + acc_x, initial_move_y + ((y)*cell_size)- size_y/2.0f, pos_z + acc_z);
 			color = ((Mathf.Sin(Random.Range(0.1f, 0.8f) * x) + Mathf.Sin(Random.Range(0.1f, 0.8f) * z)) * cell_curv) + y;
-				if(color > count_y * 0.9f){
-					if((melanoma > 0.0f) && (x >= ((count_x)/2.0f) - cancer_cells + count_y - y) && (z>= ((count_z)/2.0f)- cancer_cells+ count_y - y) && (x <= ((count_x)/2.0f) + cancer_cells - count_y + y) && (z<= ((count_z)/2.0f) + cancer_cells- count_y + y)){
-						tissue = "melanoma";
-					}else{
-						tissue = "epidermis";
-					}
-				}else if (color > count_y * 0.87f){
-						tissue = "membrane";
-				}else if (color > count_y * 0.1f){
-						tissue = "dermis";
-				}else {
-					tissue = "hypodermis";
-				}
+			if((melanoma > 0.0f) && (x >= ((count_x)/2.0f) - cancer_cells + count_y - y) && (z>= ((count_z)/2.0f)- cancer_cells+ count_y - y) && (x <= ((count_x)/2.0f) + cancer_cells - count_y + y) && (z<= ((count_z)/2.0f) + cancer_cells- count_y + y)){
+				tissue = "melanoma";
+			}else{
+				tissue = "dermis";
+			};
 			CreateCell(x,y,z,scale,count_x, count_y, count_z, position, tissue);
 		}
 	}
@@ -209,20 +201,11 @@ public class generate : MonoBehaviour {
 		if(tissue == "melanoma"){
 			sphere.GetComponent<Renderer> ().material.color = new Color(1.0f,1.0f,1.0f,1.0f);
 			export_cells.Add(new Cell(position, "melanoma"));
-		}else if(tissue == "epidermis"){
-			sphere.GetComponent<Renderer> ().material.color = new Color(0.4f,0.4f,0.4f,0.05f);
-			export_cells.Add(new Cell(position, "epidermis"));
-		}else if (tissue == "dermis"){
+		}else{
 				sphere.GetComponent<Renderer> ().material.color = new Color(0.0f,1.0f,0.0f,0.05f);
 				export_cells.Add(new Cell(position, "dermis"));
-		}else if (tissue == "membrane"){
-				sphere.GetComponent<Renderer> ().material.color = new Color(1.0f,0.1f,0.1f,0.05f);
-				export_cells.Add(new Cell(position, "membrane"));
-		}else {
-			sphere.GetComponent<Renderer> ().material.color = new Color(0.0f,0.0f,1.0f,0.05f);
-			export_cells.Add(new Cell(position, "hypodermis"));
 		}
-        sphere.transform.parent = layer1.transform;
+    sphere.transform.parent = layer1.transform;
 	}
 
 	// Use this for initialization
