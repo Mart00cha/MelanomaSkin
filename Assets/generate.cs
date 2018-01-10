@@ -166,7 +166,7 @@ public class generate : MonoBehaviour {
 	void CreateLayerOfCells(float x, float scale, float count_x, float count_y, float count_z , float pos_x, float initial_move_z,float initial_move_y, float acc_x, float acc_z){
 		float pos_z;
 		for(float z = 0.0f; z<= count_z; z+=1){
-				pos_z = z*cell_size - move_z - pairs_dist/2.0f;
+				pos_z = z*cell_size + move_z -(pairs_dist + artery_vein_dist)/2.0f;
 				acc_z -= 0.13397459621f * cell_size;
 				if( z%2 == 0 ){
 					initial_move_y += cell_size/2.0f;
@@ -236,35 +236,32 @@ public class generate : MonoBehaviour {
 		export_dict = new List<Tube>();
 		id = 0;
 
-		move_z = pairs_of_vessels * artery_vein_dist / 2.0f + (pairs_of_vessels-1.0f) * pairs_dist / 2.0f;
-		move_y = 1.2f * max_thickness;
+		move_z = -size_z/ 3.0f;
+		move_y = 0.5f * (size_y/ ups_per_vessel);
 
 		//create base vessels
 		for(float i=1.0f; i<= pairs_of_vessels; i++){
-			base_qv = CreateLongCylinderWithReturnPoints(new Vector3(-size_x/2.0f, -size_y/2.0f , ((i-1.0f)*(pairs_dist+artery_vein_dist))- move_z), new Vector3(-size_x/2.0f, size_y/2.0f, ((i-1.0f)*(pairs_dist+artery_vein_dist))- move_z), max_thickness, sector_length);
-			base_qa = CreateLongCylinderWithReturnPoints(new Vector3( size_x/2.0f, -size_y/2.0f , ((i-1.0f)*(pairs_dist+artery_vein_dist))- move_z), new Vector3( size_x/2.0f, size_y/2.0f, ((i-1.0f)*(pairs_dist+artery_vein_dist))- move_z), max_thickness, sector_length);
-			export_dict.AddRange(base_qv);
-			export_dict.AddRange(base_qa);
+			// base_qv = CreateLongCylinderWithReturnPoints(new Vector3(-size_x/2.0f, -size_y/2.0f , ((i-1.0f)*(pairs_dist+artery_vein_dist))- move_z), new Vector3(-size_x/2.0f, size_y/2.0f, ((i-1.0f)*(pairs_dist+artery_vein_dist))- move_z), max_thickness, sector_length);
+			// base_qa = CreateLongCylinderWithReturnPoints(new Vector3( size_x/2.0f, -size_y/2.0f , ((i-1.0f)*(pairs_dist+artery_vein_dist))- move_z), new Vector3( size_x/2.0f, size_y/2.0f, ((i-1.0f)*(pairs_dist+artery_vein_dist))- move_z), max_thickness, sector_length);
+			// export_dict.AddRange(base_qv);
+			// export_dict.AddRange(base_qa);
 			
 
-			int step = Mathf.FloorToInt(base_qv.Count/ups_per_vessel);
+			int step = Mathf.FloorToInt(grid_sectors_per_vessel/ups_per_vessel);
 			int move;
 			for(int k=1; k<= ups_per_vessel; k++){
-				move = Random.Range(-step/3, step/3);
-				split_tube = base_qv[step/2 + (k-1)*step + move];
-				split_point = new Vector3((split_tube.end.x + split_tube.start.x)/2.0f, (split_tube.end.y + split_tube.start.y)/2.0f, (split_tube.end.z + split_tube.start.z)/2.0f);
+				split_point = new Vector3(-size_x/2.0f, (size_y/2.0f) - ((k-1) * (size_y/ ups_per_vessel)) - move_y,((i-1.0f)*(pairs_dist+artery_vein_dist))+ move_z);
 				end_split_point = new Vector3(split_point.x + sector_length,split_point.y , split_point.z);
 				CreateCylinderBetweenPoints(split_point, end_split_point, max_thickness/2.0f);
-				export_dict.Add(new Tube(id, split_point, end_split_point, max_thickness/2.0f, -1, split_tube.id, -1, true));
+				export_dict.Add(new Tube(id, split_point, end_split_point, max_thickness/2.0f, -1, -1, -1,true,true,-10.0f));
 				id +=1;
 				qv.Enqueue(end_split_point);
 
-				move = Random.Range(-step/3, step/3);
-				split_tube = base_qa[step/2 + (k-1)*step + move];
-				split_point = new Vector3((split_tube.end.x + split_tube.start.x)/2.0f, (split_tube.end.y + split_tube.start.y)/2.0f, (split_tube.end.z + split_tube.start.z)/2.0f);
-				end_split_point = new Vector3(split_point.x+ sector_length,split_point.y, split_point.z);
+				// move = Random.Range(-step/3, step/3);
+				split_point = new Vector3(size_x/2.0f, (size_y/2.0f) - ((k-1) * (size_y/ ups_per_vessel)) - move_y, ((i-1.0f)*(pairs_dist+artery_vein_dist))+ move_z);
+				end_split_point = new Vector3(split_point.x- sector_length,split_point.y, split_point.z);
 				CreateCylinderBetweenPoints(split_point, end_split_point, max_thickness/2.0f);
-				export_dict.Add(new Tube(id, split_point, end_split_point, max_thickness/2.0f, -1, split_tube.id, -1, true));
+				export_dict.Add(new Tube(id, split_point, end_split_point, max_thickness/2.0f, -1, -1, -1,true,true,-10.0f));
 				id +=1;
 				qa.Enqueue(end_split_point);
 			}		

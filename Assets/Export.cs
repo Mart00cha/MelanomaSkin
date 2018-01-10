@@ -16,6 +16,8 @@ public class Export : MonoBehaviour {
 	 
 	         Directory.CreateDirectory ("./Data/");
 		}
+
+		Debug.Log("exporting");
 		var file = File.CreateText("skin.ag");
 
 		file.WriteLine("Visual\r\n{\r\n bkg_color = <0.18, 0.24, 0.3, 1>\r\n axis_x_color = <0.75, 0, 0, 1>\r\n axis_y_color = <0, 0.75, 0, 1>\r\n axis_z_color = <0, 0, 0.75, 1>\r\n comp_box_color = <0.5, 0.5, 0.5, 1>\r\n in_barrier_color = <1, 1, 0, 0.5>\r\n out_barrier_color = <1, 0, 0, 0.5>\r\n cell_alive_color = <0, 0, 1, 1>\r\n cell_hypoxia_color = <0, 1, 0, 1>\r\n cell_apoptosis_color = <0.5, 0.5, 0.5, 1>\r\n cell_necrosis_color = <0.2, 0.2, 0.2, 1>\r\n tube_color = <0.65, 0, 0, 1>\r\n clip_plane_color = <1, 1, 1, 1>\r\n navigator_color = <1, 0.64, 0, 0.75>\r\n boxes_color = <1, 1, 1, 0.25>\r\n}");
